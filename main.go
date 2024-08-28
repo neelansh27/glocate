@@ -23,17 +23,20 @@ func (e *excludedFiles) String() string {
 }
 
 func Search(dir, search string, ignoreCase, colors bool, e excludedFiles) error {
-	err := filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
-		if info.IsDir() && slices.Contains(e, info.Name()) {
-			return filepath.SkipDir
-		}
-		if err != nil {
+        err := filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
+
+                if err != nil {
 			if errors.Is(err, os.ErrPermission) {
 				fmt.Println(err) // will exit with success code
 			} else {
 				return err // will exit with error code
 			}
 		}
+		
+                if info.IsDir() && slices.Contains(e, info.Name()) {
+			return filepath.SkipDir
+		}
+
 		var idx int
 
 		if ignoreCase {
